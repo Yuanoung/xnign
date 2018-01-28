@@ -109,31 +109,70 @@ struct ngx_open_file_s {
 #define NGX_MODULE_V1_PADDING  0, 0, 0, 0, 0, 0, 0, 0
 
 struct ngx_module_s {
+    // 下面的ctx_index，index，spare0， spare1, spare2, spare3, version變量不需要在定義時賦值，
+    // 可以用Nginx準備好的宏NGX_MODULE_V1來定義，它已經定義好來這7個值。
+
+    //      #define NGX_MODULE_V1	0,0,0,0,0,0,1
+
+    // 對於一類模塊來（由下面的type成員決定類別）而言，ctx_index表示當前模塊在這類模塊中的序號。這個成
+    // 員常常是由管理這類模塊的一個Nginx核心模塊設置的，對於所有的HTTP模塊而言，ctx_index是由核心模塊
+    // ngx_http_module設置的。ctx_index非常重要，Nginx的模塊化設計非常依賴於各個模塊的順序，它們既
+    // 用於表達式優先級，也用於表明每個模塊的位置，借以幫助Nginx框架快速獲得某個模塊的數據
     ngx_uint_t            ctx_index;
+
+    // index表示當前模塊在nginx_module數組中的序號。注意，ctx_index表示當前模塊在一類模塊中的序號，而index
+    // 表示當前模塊在所有模塊中的序號，它同樣重要。Nginx啓動時會根據ngx_modules數組設置個模塊的index值。例如：
+	// ngx_max_module = 0;
+	// for (i = 0; ngx_modules[i]; i++) {   該數組的最後一個的元素的值爲NULL
+	// 	ngx_modules[i]->index = ngx_max_module++;
+	// }
     ngx_uint_t            index;
 
+    // spare系列的保留變量，暫未使用
     ngx_uint_t            spare0;
     ngx_uint_t            spare1;
     ngx_uint_t            spare2;
     ngx_uint_t            spare3;
 
+    // 模塊的版本，便於將來的擴展。目前只有一種，默認爲1
     ngx_uint_t            version;
 
+    // ctx用於指向一類模塊的上下文結構體，那爲什麼需要ctx呢？因爲前面說過，Nginx模塊有許多種類，不同類模塊之前的
+    // 功能差別很大。例如，事件類型的模塊主要處理I/O事件相關功能，HTTP類型的模塊主要處理HTTP應用層的功能。這樣，
+    // 每個模塊都有來自己的特性，兒ctx將會指向特定類型模塊的公共接口。例如，在HTTP模塊中，ctx需要指向ngx_http_module_t結構體。
     void                 *ctx;
+
+    // commands將處理nginx.conf中的配置顯
     ngx_command_t        *commands;
+
+    // type表示該模塊的類型，它於ctx指針是緊密相關的。在官方Nginx中，它的取值範圍有一下5中：
+    // NGX_HTTP_MODULE, NGX_CORE_MUDULE, NGX_CONF_MODULE, NGX_EVENT_MODULE, NGX_MALL_MODULE。
+    // 實際上，還可以自定義新的模塊類型。
     ngx_uint_t            type;
 
+    // 在Nginx的啓動，停止過程中，一下7個函數指針表示7個執行點會分別調用7中方法。對於任一個方法而言，如果不需要Nginx在某
+    // 個時刻執行它，那麼簡單地把它設爲NULL指針即可
+    // 雖然從字面上理解應當在master進程啓動時回調init_master，但到目前爲止，框架代碼從來不會調用它，因此，可將init_master設爲NULL
     ngx_int_t           (*init_master)(ngx_log_t *log);
 
+    // init_module回調方法在初始化所有模塊時被調用。在master/worker模式下，這個階段將在啓動worker子進程前完成。
     ngx_int_t           (*init_module)(ngx_cycle_t *cycle);
 
+    // init_process回調方法在正常服務前被調用。在master/worker模式下，多個我人客人子進程已經產生，在每個worker進程
+    // 的初始化過程中會調用所有模塊的init_process函數
     ngx_int_t           (*init_process)(ngx_cycle_t *cycle);
-    ngx_int_t           (*init_thread)(ngx_cycle_t *cycle);
-    void                (*exit_thread)(ngx_cycle_t *cycle);
-    void                (*exit_process)(ngx_cycle_t *cycle);
 
+    // 由於Nginx暫時不支持多線程模式， 所有init_thread在框架中沒有被調用過，設爲NULL
+    ngx_int_t           (*init_thread)(ngx_cycle_t *cycle);
+    // 同上，exit_thread也不支持，設爲NULL
+    void                (*exit_thread)(ngx_cycle_t *cycle);
+    // exit_process回調方法在服務停止前調用。在master/worker模式下，worker進程會在退出前面調用它
+    void                (*exit_process)(ngx_cycle_t *cycle);
+    // exit_master回調方法將在master退出前被調用
     void                (*exit_master)(ngx_cycle_t *cycle);
 
+    // 以下8個spare_hook變量也是保留字段，目前沒有使用，但是可用Nginx提供的NGX_MODULE_V1_PADDING宏來填充。看一下該宏的定義：
+	// #define NGX_MODULE_V1_PADDING	0, 0, 0, 0, 0, 0, 0, 0
     uintptr_t             spare_hook0;
     uintptr_t             spare_hook1;
     uintptr_t             spare_hook2;

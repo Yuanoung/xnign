@@ -22,16 +22,26 @@ typedef struct {
 
 
 typedef struct {
+    // 解析配置文件前調用
     ngx_int_t   (*preconfiguration)(ngx_conf_t *cf);
+
+    // 完成配置文件的解析後調用
     ngx_int_t   (*postconfiguration)(ngx_conf_t *cf);
 
+    // 當需要創建數據結構用於存儲main級別（直屬於http{...}快的配置顯）的全局配置顯，可以通過create_main_conf回調方法創建存儲全局配置顯的結構體
     void       *(*create_main_conf)(ngx_conf_t *cf);
+
+    // 常用於初始化main級別配置顯    
     char       *(*init_main_conf)(ngx_conf_t *cf, void *conf);
 
+    // 當需要創建數據結構用於存儲srv級別（直屬於server{...}快的配置顯）的全局配置顯，可以通過create_srv_conf回調方法創建存儲全局配置顯的結構體
     void       *(*create_srv_conf)(ngx_conf_t *cf);
     char       *(*merge_srv_conf)(ngx_conf_t *cf, void *prev, void *conf);
 
+    // 當需要創建數據結構用於存儲loc級別（只屬於location{...}塊的配置顯）的配置顯時，可以實現create_loc_conf回調方法
     void       *(*create_loc_conf)(ngx_conf_t *cf);
+
+    // merge_loc_conf回調方法主要用於合併srv級別和loc級別下的同名配置顯
     char       *(*merge_loc_conf)(ngx_conf_t *cf, void *prev, void *conf);
 } ngx_http_module_t;
 
