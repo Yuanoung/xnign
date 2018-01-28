@@ -62,14 +62,12 @@ ngx_http_mytest(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_http_core_loc_conf_t  *clcf;
 
-    //Ê×ÏÈÕÒµ½mytestÅäÖÃÏîËùÊôµÄÅäÖÃ¿é£¬clcfÃ²ËÆÊÇlocation¿éÄÚµÄÊı¾İ
-//½á¹¹£¬ÆäÊµ²»È»£¬Ëü¿ÉÒÔÊÇmain¡¢srv»òÕßloc¼¶±ğÅäÖÃÏî£¬Ò²¾ÍÊÇËµÔÚÃ¿¸ö
-//http{}ºÍserver{}ÄÚÒ²¶¼ÓĞÒ»¸öngx_http_core_loc_conf_t½á¹¹Ìå
+    // é¦–å…ˆæ‰¾åˆ°mytesté…ç½®é¡¯æ‰€å±¬çš„é…ç½®å¡Šï¼Œclcfçœ‹ä¸Šå»åƒæ˜¯locationå¡Šå…§çš„æ•¸æ“šçµæ§‹ï¼Œå…¶å¯¦ä¸ç„¶ï¼Œå®ƒå¯ä»¥æ˜¯mainï¼Œ
+    // srvæˆ–è€…locç´šåˆ¥é…ç½®é¡¯ï¼Œä¹Ÿå°±æ˜¯èªªï¼Œåœ¨æ¯å€‹httpå’Œserverå…§ä¹Ÿéƒ½æœ‰ä¸€å€‹ngx_http_core_loc_conf_tçµæ§‹é«”
     clcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_core_module);
 
-    //http¿ò¼ÜÔÚ´¦ÀíÓÃ»§ÇëÇó½øĞĞµ½NGX_HTTP_CONTENT_PHASE½×¶ÎÊ±£¬Èç¹û
-//ÇëÇóµÄÖ÷»úÓòÃû¡¢URIÓëmytestÅäÖÃÏîËùÔÚµÄÅäÖÃ¿éÏàÆ¥Åä£¬¾Í½«µ÷ÓÃÎÒÃÇ
-//ÊµÏÖµÄngx_http_mytest_handler·½·¨´¦ÀíÕâ¸öÇëÇó
+    // HTTPæ¡†æ¶åœ¨è™•ç†ç”¨æˆ¶è«‹æ±‚é€²è¡Œåˆ°NGX_HTTP_CONTENT_PHASEéšæ®µæ™‚ï¼Œå¦‚æœè«‹æ±‚çš„ä¸»æ©ŸåŸŸåï¼Œuriæ–¼mytesté…ç½®é¡¯æ‰€åœ¨çš„é…ç½®å¡Š
+    // æƒ³åŒ¹é…ï¼Œå°±å°‡èª¿ç”¨æˆ‘å€‘å¯¦ç¾çš„ngx_http_mytest_handleræ–¹æ³•è™•ç†é€™å€‹è«‹æ±‚
     clcf->handler = ngx_http_mytest_handler;
 
     return NGX_CONF_OK;
@@ -78,61 +76,61 @@ ngx_http_mytest(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
 static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r)
 {
-    //±ØĞëÊÇGET»òÕßHEAD·½·¨£¬·ñÔò·µ»Ø405 Not Allowed
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½GETï¿½ï¿½ï¿½ï¿½HEADï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»ï¿½405 Not Allowed
     if (!(r->method & (NGX_HTTP_GET | NGX_HTTP_HEAD)))
     {
         return NGX_HTTP_NOT_ALLOWED;
     }
 
-    //¶ªÆúÇëÇóÖĞµÄ°üÌå
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ĞµÄ°ï¿½ï¿½ï¿½
     ngx_int_t rc = ngx_http_discard_request_body(r);
     if (rc != NGX_OK)
     {
         return rc;
     }
 
-    //ÉèÖÃ·µ»ØµÄContent-Type¡£×¢Òâ£¬ngx_str_tÓĞÒ»¸öºÜ·½±ãµÄ³õÊ¼»¯ºê
-//ngx_string£¬Ëü¿ÉÒÔ°Ñngx_str_tµÄdataºÍlen³ÉÔ±¶¼ÉèÖÃºÃ
+    //ï¿½ï¿½ï¿½Ã·ï¿½ï¿½Øµï¿½Content-Typeï¿½ï¿½×¢ï¿½â£¬ngx_str_tï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ü·ï¿½ï¿½ï¿½Ä³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
+//ngx_stringï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô°ï¿½ngx_str_tï¿½ï¿½dataï¿½ï¿½lenï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½Ãºï¿½
     ngx_str_t type = ngx_string("text/plain");
-    //·µ»ØµÄ°üÌåÄÚÈİ
+    //ï¿½ï¿½ï¿½ØµÄ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     ngx_str_t response = ngx_string("Hello World!");
-    //ÉèÖÃ·µ»Ø×´Ì¬Âë
+    //ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½
     r->headers_out.status = NGX_HTTP_OK;
-    //ÏìÓ¦°üÊÇÓĞ°üÌåÄÚÈİµÄ£¬ËùÒÔĞèÒªÉèÖÃContent-Length³¤¶È
+    //ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Ğ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İµÄ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Content-Lengthï¿½ï¿½ï¿½ï¿½
     r->headers_out.content_length_n = response.len;
-    //ÉèÖÃContent-Type
+    //ï¿½ï¿½ï¿½ï¿½Content-Type
     r->headers_out.content_type = type;
 
-    //·¢ËÍhttpÍ·²¿
+    //ï¿½ï¿½ï¿½ï¿½httpÍ·ï¿½ï¿½
     rc = ngx_http_send_header(r);
     if (rc == NGX_ERROR || rc > NGX_OK || r->header_only)
     {
         return rc;
     }
 
-    //¹¹Ôìngx_buf_t½á¹¹×¼±¸·¢ËÍ°üÌå
+    //ï¿½ï¿½ï¿½ï¿½ngx_buf_tï¿½á¹¹×¼ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ï¿½ï¿½
     ngx_buf_t                 *b;
     b = ngx_create_temp_buf(r->pool, response.len);
     if (b == NULL)
     {
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
-    //½«Hello World¿½±´µ½ngx_buf_tÖ¸ÏòµÄÄÚ´æÖĞ
+    //ï¿½ï¿½Hello Worldï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ngx_buf_tÖ¸ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½
     ngx_memcpy(b->pos, response.data, response.len);
-    //×¢Òâ£¬Ò»¶¨ÒªÉèÖÃºÃlastÖ¸Õë
+    //×¢ï¿½â£¬Ò»ï¿½ï¿½Òªï¿½ï¿½ï¿½Ãºï¿½lastÖ¸ï¿½ï¿½
     b->last = b->pos + response.len;
-    //ÉùÃ÷ÕâÊÇ×îºóÒ»¿é»º³åÇø
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½é»ºï¿½ï¿½ï¿½ï¿½
     b->last_buf = 1;
 
-    //¹¹Ôì·¢ËÍÊ±µÄngx_chain_t½á¹¹Ìå
+    //ï¿½ï¿½ï¿½ì·¢ï¿½ï¿½Ê±ï¿½ï¿½ngx_chain_tï¿½á¹¹ï¿½ï¿½
     ngx_chain_t		out;
-    //¸³Öµngx_buf_t
+    //ï¿½ï¿½Öµngx_buf_t
     out.buf = b;
-    //ÉèÖÃnextÎªNULL
+    //ï¿½ï¿½ï¿½ï¿½nextÎªNULL
     out.next = NULL;
 
-    //×îºóÒ»²½·¢ËÍ°üÌå£¬http¿ò¼Ü»áµ÷ÓÃngx_http_finalize_request·½·¨
-//½áÊøÇëÇó
+    //ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ï¿½å£¬httpï¿½ï¿½Ü»ï¿½ï¿½ï¿½ï¿½ngx_http_finalize_requestï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     return ngx_http_output_filter(r, &out);
 }
 

@@ -98,22 +98,32 @@ typedef struct {
 
 
 typedef enum {
+    // 在接收到完整的HTTP頭部後處理的HTTP階段
     NGX_HTTP_POST_READ_PHASE = 0,
-
+    // 在還沒有查詢到uri匹配的location前，這是rewrite重寫url也作爲一個獨立的http階段
     NGX_HTTP_SERVER_REWRITE_PHASE,
-
+    // 根據uri尋找匹配的location，這個階段通常由ngx_http_core_module模塊實現塊，不建議其他http模塊重寫定義這一階段的行爲
     NGX_HTTP_FIND_CONFIG_PHASE,
+    // 在ngx_http_find_conf_phase階段之後重寫url的意義於ngx_http_server_rewrite_phase階段顯然是不同的，因爲這兩個會
+    // 導致查找到不同的location塊（location是於uri進行匹配的）
     NGX_HTTP_REWRITE_PHASE,
+    // 這一階段是用於在rewrite重寫url後重新跳到ngx_http_find_config_phase階段，找到於新的uri匹配的location。所以，這一
+    // 階段是無法由第三方http模塊處理的，而僅由ngx_http_core_module模塊使用
     NGX_HTTP_POST_REWRITE_PHASE,
-
+    // 處理ngx_http_access_phase階段前，http模塊可以介入的處理階段
     NGX_HTTP_PREACCESS_PHASE,
-
+    // 這個階段用於讓http模塊判斷是否允許這個請求訪問nginx服務器
     NGX_HTTP_ACCESS_PHASE,
+    // 當ngx_http_access_phase階段中http模塊的handler處理方法返回不允許訪問的錯誤碼時（實際是ngx_http_forbidden或者
+    // ngx_http_unauthorized），這個階段將負責構造拒接服務的用戶響應。所以這個階段實際上用於給ngx_http_access_phase階段收尾
     NGX_HTTP_POST_ACCESS_PHASE,
-
+    // 這個階段完全視爲兩try_files配置顯而設立的。當http請求訪問靜態文件資源時，try_files配置顯可以使這個請求順序地訪問多個靜態
+    // 文件資源，如果某一次訪問失敗，則繼續訪問try_files中指定的下一個靜態資源。另外，這個功能完全是在ngx_http_try_files_phase階段實現的
     NGX_HTTP_TRY_FILES_PHASE,
+    // 用於處理http請求內容的階段，這是大部分http模塊最喜歡介入的階段
     NGX_HTTP_CONTENT_PHASE,
-
+    // 處理完請求後記錄日誌的階段。例如，ngx_http_log_module模塊就在這個階段中加入兩一個handler處理方法，使得每個http請求
+    // 處理完畢後access_log日誌
     NGX_HTTP_LOG_PHASE
 } ngx_http_phases;
 
