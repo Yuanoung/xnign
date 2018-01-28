@@ -267,11 +267,16 @@ typedef struct {
 
 
 typedef struct {
+    // 代發送的http頭部鏈表，於header_in中的headers成員類似
     ngx_list_t                        headers;
 
+    // 響應中的狀態值，如200表示成功。這裏可以使用各個宏，如NGX_HTTP_OK
     ngx_uint_t                        status;
+
+    // 相應的狀態行，如“HTTP/1.1 201 CREATED"
     ngx_str_t                         status_line;
 
+    // 以下成員（包括ngx_table_elt_t)都是rfc2616規範中定義的http頭部，設置後iu，ngx_http_header_filter_module過濾模塊可以把它們加到代發送的網絡包中
     ngx_table_elt_t                  *server;
     ngx_table_elt_t                  *date;
     ngx_table_elt_t                  *content_length;
@@ -287,6 +292,7 @@ typedef struct {
 
     ngx_str_t                        *override_charset;
 
+    // 可以調用ngx_http_set_content_type(r)方法幫助我們設置content-type頭部，這個方法會根據uri中的文件擴展名并對應這mime.type來設置content-type值
     size_t                            content_type_len;
     ngx_str_t                         content_type;
     ngx_str_t                         charset;
@@ -295,6 +301,7 @@ typedef struct {
 
     ngx_array_t                       cache_control;
 
+    // 在這裏指定過content_length_n後，不用再次到ngx_table_elt_t *content_length中設置響應長度
     off_t                             content_length_n;
     time_t                            date_time;
     time_t                            last_modified_time;
