@@ -32,8 +32,11 @@ typedef void (*ngx_pool_cleanup_pt)(void *data);
 typedef struct ngx_pool_cleanup_s  ngx_pool_cleanup_t;
 
 struct ngx_pool_cleanup_s {
+    // 執行實際清理資源工作的回調方法
     ngx_pool_cleanup_pt   handler;
+    // handler回調方法需要的參數
     void                 *data;
+    // 下一個ngx_pool_cleanup_t清理對象，如果沒有，需置爲NULL
     ngx_pool_cleanup_t   *next;
 };
 
@@ -66,8 +69,11 @@ struct ngx_pool_s {
 
 
 typedef struct {
+    // 文件句柄
     ngx_fd_t              fd;
+    // 文件名稱
     u_char               *name;
+    // 日誌對象
     ngx_log_t            *log;
 } ngx_pool_cleanup_file_t;
 
