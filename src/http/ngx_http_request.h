@@ -166,8 +166,34 @@ typedef struct {
 
 
 typedef struct {
+    
+    /* 所有解析過的http頭部都在headers鏈表中，可以使用
+    *  the iteration through the list:
+    *
+    *  part = &list.part;
+    *  data = part->elts;
+    *
+    *  for (i = 0 ;; i++) {
+    *
+    *      if (i >= part->nelts) {
+    *          if (part->next == NULL) {
+    *              break;
+    *          }
+    *
+    *          part = part->next;
+    *          data = part->elts;
+    *          i = 0;
+    *      }
+    *
+    *      ...  data[i] ...
+    *
+    *  }
+    * 來獲取所有的http頭部。注意，這裏的headers鏈表的每一個元素都是ngx_table_elt_t成員
+    */
     ngx_list_t                        headers;
 
+    // 以下每個ngx_table_elt_t成員都是RFC2616規範中定義的http頭部，他們實際都是指向headers鏈表
+    // 中的相應成員。注意，當它們爲NULL空指針時，表示沒有解析到相應的http頭部
     ngx_table_elt_t                  *host;
     ngx_table_elt_t                  *connection;
     ngx_table_elt_t                  *if_modified_since;
@@ -212,16 +238,24 @@ typedef struct {
     ngx_table_elt_t                  *date;
 #endif
 
+    // user和passwd是只有在ngx_http_auth_basic_module才會用到的成員，這裏可以忽略
     ngx_str_t                         user;
     ngx_str_t                         passwd;
 
+    // cookies是以ngx_array_t數組存儲的，
     ngx_array_t                       cookies;
 
+    // server名稱
     ngx_str_t                         server;
+
+    // 根據ngx_table_elt_t *content_length計算出的http包大小
     off_t                             content_length_n;
     time_t                            keep_alive_n;
 
+    // http鏈接類型，它的取值範圍0，NGX_HTTP_CONNECTION_CLOSE或者NGX_HTTP_CONNECTION_HEEP_ALIVE
     unsigned                          connection_type:2;
+
+    // 以下7個標誌位是http框架根據瀏覽器傳來“useragent”頭部，它們可用來判斷瀏覽器的類型，值位1表示相應的瀏覽器發來的請求，值位0相反
     unsigned                          msie:1;
     unsigned                          msie6:1;
     unsigned                          opera:1;
