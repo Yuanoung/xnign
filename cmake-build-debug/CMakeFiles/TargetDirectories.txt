@@ -1,0 +1,3 @@
+/home/yuanoung/Projects/nginx-1.0.15/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/yuanoung/Projects/nginx-1.0.15/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/yuanoung/Projects/nginx-1.0.15/cmake-build-debug/CMakeFiles/nginx_1_0_15.dir
