@@ -76,61 +76,59 @@ ngx_http_mytest(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
 static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r)
 {
-    //������GET����HEAD���������򷵻�405 Not Allowed
+    //必須是GET或者HEAD方法，否則返回405 Not Allowed
     if (!(r->method & (NGX_HTTP_GET | NGX_HTTP_HEAD)))
     {
         return NGX_HTTP_NOT_ALLOWED;
     }
 
-    //���������еİ���
+    //丟棄請求中的包體
     ngx_int_t rc = ngx_http_discard_request_body(r);
     if (rc != NGX_OK)
     {
         return rc;
     }
 
-    //���÷��ص�Content-Type��ע�⣬ngx_str_t��һ���ܷ���ĳ�ʼ����
-//ngx_string�������԰�ngx_str_t��data��len��Ա�����ú�
+    //設置返回的Conytent-Type。注意，ngx_str_t由一個很方便的初始化宏ngx_string，它可以把ngx_str_t的data和len成員都設置好
     ngx_str_t type = ngx_string("text/plain");
-    //���صİ�������
+    //返回包體的內容
     ngx_str_t response = ngx_string("Hello World!");
-    //���÷���״̬��
+    //設置返回的狀態碼
     r->headers_out.status = NGX_HTTP_OK;
-    //��Ӧ�����а������ݵģ�������Ҫ����Content-Length����
+    //響應包是有包體內容的，需要設置Content-Length長度
     r->headers_out.content_length_n = response.len;
-    //����Content-Type
+    //設置Content-Type
     r->headers_out.content_type = type;
 
-    //����httpͷ��
+    //發送HTTP頭部
     rc = ngx_http_send_header(r);
     if (rc == NGX_ERROR || rc > NGX_OK || r->header_only)
     {
         return rc;
     }
 
-    //����ngx_buf_t�ṹ׼�����Ͱ���
+    //構造ngx_buf_t結構體準備發送包體
     ngx_buf_t                 *b;
     b = ngx_create_temp_buf(r->pool, response.len);
     if (b == NULL)
     {
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
-    //��Hello World������ngx_buf_tָ����ڴ���
+    //將hello world複製到ngx_buf_t指向的內存中
     ngx_memcpy(b->pos, response.data, response.len);
-    //ע�⣬һ��Ҫ���ú�lastָ��
+    //注意，一定要設置好last指針
     b->last = b->pos + response.len;
-    //�����������һ�黺����
+    //聲明最好一塊緩衝區
     b->last_buf = 1;
 
-    //���췢��ʱ��ngx_chain_t�ṹ��
+    //構造發送時的ngx_chain_t結構體
     ngx_chain_t		out;
-    //��ֵngx_buf_t
+    //賦值ngx_buf_t
     out.buf = b;
-    //����nextΪNULL
+    //設置next位NULL
     out.next = NULL;
 
-    //���һ�����Ͱ��壬http��ܻ����ngx_http_finalize_request����
-//��������
+    //最後一步發送包體，發送結束後HTTP框架會調用ngx_http_fionalize_request方法結束請求
     return ngx_http_output_filter(r, &out);
 }
 
