@@ -241,12 +241,12 @@ ngx_http_mytest_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
 static char* ngx_conf_set_myconfig(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     //注意，参数conf就是http框架传给我们的，在ngx_http_mytest_create_loc_conf
-//回调方法中分配的结构体ngx_http_mytest_conf_t
+    //回调方法中分配的结构体ngx_http_mytest_conf_t
     ngx_http_mytest_conf_t  *mycf = conf;
 
     // cf->args是1个ngx_array_t队列，它的成员都是ngx_str_t结构。
-//我们用value指向ngx_array_t的elts内容，其中value[1]就是第1
-//个参数，同理value[2]是第2个参数
+    //我们用value指向ngx_array_t的elts内容，其中value[1]就是第1
+    //个参数，同理value[2]是第2个参数
     ngx_str_t* value = cf->args->elts;
 
     //ngx_array_t的nelts表示参数的个数
@@ -260,7 +260,7 @@ static char* ngx_conf_set_myconfig(ngx_conf_t *cf, ngx_command_t *cmd, void *con
         //将字符串形式的第2个参数转为整型
         mycf->my_config_num = ngx_atoi(value[2].data, value[2].len);
         //如果字符串转化整型失败，将报"invalid number"错误，
-//nginx启动失败
+    //nginx启动失败
         if (mycf->my_config_num == NGX_ERROR)
         {
             return "invalid number";
