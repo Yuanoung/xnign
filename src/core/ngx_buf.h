@@ -18,7 +18,8 @@ typedef void *            ngx_buf_tag_t;
 typedef struct ngx_buf_s  ngx_buf_t;
 
 struct ngx_buf_s {
-    // pos通常用來告訴使用者本次應該從破碎這個位置開始處理內存中的數據，這樣設置是因爲同一個ngx_buf_t可能被多次反覆處理。當然，pos的含義是由使用它的模塊定義的
+    // pos通常用來告訴使用者本次應該從這個位置開始處理內存中的數據，這樣設置是因爲同一個ngx_buf_t可能被多次反覆處理。
+    // 當然，pos的含義是由使用它的模塊定義的
     u_char          *pos;
     // last通常表示有效的內容到此爲止，注意，post和last之間的內存是希望nginx處理的內容
     u_char          *last;
@@ -40,7 +41,7 @@ struct ngx_buf_s {
     ngx_buf_t       *shadow;
 
 
-    // 臨時內存標誌位，位1時表示數據在內存中且這段內存可以修改
+    // 臨時內存標誌位，为1時表示數據在內存中且這段內存可以修改
     unsigned         temporary:1;
 
     // 標誌位，爲1時表示這段數據在內存中且這段內存不可修改
@@ -55,7 +56,8 @@ struct ngx_buf_s {
     unsigned         in_file:1;
     // 標誌位，爲1時表示需要執行flush操作
     unsigned         flush:1;
-    // 標誌位，對於操作這塊緩衝區是否使用同步方式，需慎重考慮，這肯能會阻塞Nginx進程，Nginx中所有操作幾乎都是異步的，這是它支持高併發的關鍵。這些框架代碼在sync爲1時可能會阻塞的方式運行I/O操作，它的意義視使用它的Nginx模塊而定
+    // 標誌位，對於操作這塊緩衝區是否使用同步方式，需慎重考慮，這肯能會阻塞Nginx進程，Nginx中所有操作幾乎都是異步的，
+    // 這是它支持高併發的關鍵。這些框架代碼在sync爲1時可能會阻塞的方式運行I/O操作，它的意義視使用它的Nginx模塊而定
     unsigned         sync:1;
     //標誌位，表示是否最後一塊緩衝區，因爲ngx_buf_t可以由ngx_chain_t鏈表串聯起來，因此，當last_buf爲1時，表示當前是最後一塊待處理的緩衝區
     unsigned         last_buf:1;

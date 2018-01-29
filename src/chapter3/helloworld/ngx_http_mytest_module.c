@@ -89,7 +89,7 @@ static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r)
         return rc;
     }
 
-    //設置返回的Conytent-Type。注意，ngx_str_t由一個很方便的初始化宏ngx_string，它可以把ngx_str_t的data和len成員都設置好
+    //設置返回的Conytent-Type。注意，ngx_str_t有一個很方便的初始化宏ngx_string，它可以把ngx_str_t的data和len成員都設置好
     ngx_str_t type = ngx_string("text/plain");
     //返回包體的內容
     ngx_str_t response = ngx_string("Hello World!");
