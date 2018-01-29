@@ -63,13 +63,13 @@ ngx_http_mytest(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     ngx_http_core_loc_conf_t  *clcf;
 
     //首先找到mytest配置项所属的配置块，clcf貌似是location块内的数据
-//结构，其实不然，它可以是main、srv或者loc级别配置项，也就是说在每个
-//http{}和server{}内也都有一个ngx_http_core_loc_conf_t结构体
+    //结构，其实不然，它可以是main、srv或者loc级别配置项，也就是说在每个
+    //http{}和server{}内也都有一个ngx_http_core_loc_conf_t结构体
     clcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_core_module);
 
     //http框架在处理用户请求进行到NGX_HTTP_CONTENT_PHASE阶段时，如果
-//请求的主机域名、URI与mytest配置项所在的配置块相匹配，就将调用我们
-//实现的ngx_http_mytest_handler方法处理这个请求
+    //请求的主机域名、URI与mytest配置项所在的配置块相匹配，就将调用我们
+    //实现的ngx_http_mytest_handler方法处理这个请求
     clcf->handler = ngx_http_mytest_handler;
 
     return NGX_CONF_OK;
@@ -135,7 +135,7 @@ static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r)
 
 
     //设置返回的Content-Type。注意，ngx_str_t有一个很方便的初始化宏
-//ngx_string，它可以把ngx_str_t的data和len成员都设置好
+    //ngx_string，它可以把ngx_str_t的data和len成员都设置好
     ngx_str_t type = ngx_string("text/plain");
 
     //设置返回状态码
@@ -160,7 +160,7 @@ static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r)
     out.next = NULL;
 
     //最后一步发送包体，http框架会调用ngx_http_finalize_request方法
-//结束请求
+    //结束请求
     return ngx_http_output_filter(r, &out);
 }
 
