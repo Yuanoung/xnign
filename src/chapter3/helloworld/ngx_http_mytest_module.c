@@ -27,17 +27,17 @@ static ngx_command_t  ngx_http_mytest_commands[] =
 
 static ngx_http_module_t  ngx_http_mytest_module_ctx =
 {
-    NULL,                              /* preconfiguration */
-    NULL,                  		/* postconfiguration */
+    NULL,                               /* preconfiguration */
+    NULL,                  		        /* postconfiguration */
 
-    NULL,                              /* create main configuration */
-    NULL,                              /* init main configuration */
+    NULL,                               /* create main configuration */
+    NULL,                               /* init main configuration */
 
-    NULL,                              /* create server configuration */
-    NULL,                              /* merge server configuration */
+    NULL,                               /* create server configuration */
+    NULL,                               /* merge server configuration */
 
-    NULL,       			/* create location configuration */
-    NULL         			/* merge location configuration */
+    NULL,       			            /* create location configuration */
+    NULL         			            /* merge location configuration */
 };
 
 ngx_module_t  ngx_http_mytest_module =

@@ -407,9 +407,11 @@ struct ngx_http_request_s {
                                          /* of ngx_http_upstream_state_t */
 
     ngx_pool_t                       *pool;
-    ngx_buf_t                        *header_in;
 
-    ngx_http_headers_in_t             headers_in;
+    // header_in指向HTTP头部收到的未经解析的HTTP头部，其实就是接收HTTP头部的缓冲区
+    ngx_buf_t                        *header_in;　
+
+    ngx_http_headers_in_t             headers_in;　//　存储已经解析过的HTTP头部
     ngx_http_headers_out_t            headers_out;
 
     ngx_http_request_body_t          *request_body;
