@@ -23,12 +23,12 @@ echo > $NGX_AUTOCONF_ERR
 # 向objs/ngx_auto_config.h写入命令行带的参数
 echo "#define NGX_CONFIGURE \"$NGX_CONFIGURE\"" > $NGX_AUTO_CONFIG_H
 
-判断ＤＥＢＵＧ标志，如果有，那么在objs/ngx_auto_config.h文件中写入ＤＥＢＵＧ宏
+# 判断ＤＥＢＵＧ标志，如果有，那么在objs/ngx_auto_config.h文件中写入ＤＥＢＵＧ宏
 if [ $NGX_DEBUG = YES ]; then
     have=NGX_DEBUG . auto/have
 fi
 
-现在开始检查操作系统参数是否支持后续编译
+# 现在开始检查操作系统参数是否支持后续编译
 if test -z "$NGX_PLATFORM"; then
     echo "checking for OS"
 
@@ -36,7 +36,7 @@ if test -z "$NGX_PLATFORM"; then
     NGX_RELEASE=`uname -r 2>/dev/null`
     NGX_MACHINE=`uname -m 2>/dev/null`
 
-屏幕上输出ｏｓ名称，内核版本，３２位／６４位内核
+# 屏幕上输出ｏｓ名称，内核版本，３２位／６４位内核
     echo " + $NGX_SYSTEM $NGX_RELEASE $NGX_MACHINE"
 
     NGX_PLATFORM="$NGX_SYSTEM:$NGX_RELEASE:$NGX_MACHINE";
