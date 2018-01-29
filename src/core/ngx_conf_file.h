@@ -82,9 +82,9 @@ struct ngx_command_s {
     ngx_uint_t            type;
     // 出現來name中指定的配置顯後，將會調用set方法處理配置顯的參數
     char               *(*set)(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
-    // 在配置文件中的偏移量
+    // 通常用於使用預設的解析方法解析配置顯，這是配置模塊的一個優秀設計。它需要於conf配合使用        
     ngx_uint_t            conf;
-    // 通常用於使用預設的解析方法解析配置顯，這是配置模塊的一個優秀設計。它需要於conf配合使用
+    // 在配置文件中的偏移量
     ngx_uint_t            offset;
     // 配置顯讀取後的處理方法，必須是ngx_conf_post_t結構的指針
     void                 *post;
