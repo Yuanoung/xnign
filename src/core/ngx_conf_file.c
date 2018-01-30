@@ -1183,25 +1183,32 @@ ngx_conf_set_keyval_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 char *
 ngx_conf_set_num_slot(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
+    // 指針conf就是存儲參數的機構體的地址
     char  *p = conf;
 
     ngx_int_t        *np;
     ngx_str_t        *value;
     ngx_conf_post_t  *post;
 
-
+    // 根據ngx_command_t中的offset偏移量，可以找到結構體中的成員，而對於ngx_conf_set_num_slot
+    // 方法而言，存儲數字的必須時ngx_int_t類型
     np = (ngx_int_t *) (p + cmd->offset);
 
+    // 在這裏可以知道爲什麼要把ngx_conf_set_num_slot方法解析的成員在create_loc_conf
+    // 等方法中初始化爲NGX_CONF_UNSET，否則是會報錯的
     if (*np != NGX_CONF_UNSET) {
         return "is duplicate";
     }
 
+    // value將指向配置顯的參數
     value = cf->args->elts;
+    // 將字符串的參數轉化爲整型，并設置到create_loc_conf等方法生成的結構體的相關成員上
     *np = ngx_atoi(value[1].data, value[1].len);
     if (*np == NGX_ERROR) {
         return "invalid number";
     }
-
+    
+    // 如果ngx_command_t中的post已經實現，那麼還需要調用post->post_handler方法
     if (cmd->post) {
         post = cmd->post;
         return post->post_handler(cf, post, np);
