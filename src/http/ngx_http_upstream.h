@@ -122,8 +122,11 @@ struct ngx_http_upstream_srv_conf_s {
 typedef struct {
     ngx_http_upstream_srv_conf_t    *upstream;
 
+    // 链接上游服务器的超时时间，单位为毫秒
     ngx_msec_t                       connect_timeout;
+    // 发送TCP包到上游服务器的超时时间
     ngx_msec_t                       send_timeout;
+    // 接收TCP包到上游服务器的超时时间，
     ngx_msec_t                       read_timeout;
     ngx_msec_t                       timeout;
 

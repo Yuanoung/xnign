@@ -22,17 +22,17 @@ typedef struct
     ngx_str_t   	my_str;
     ngx_int_t   	my_num;
     ngx_flag_t   	my_flag;
-    size_t		my_size;
+    size_t		    my_size;
     ngx_array_t*  	my_str_array;
     ngx_array_t*  	my_keyval;
-    off_t   	my_off;
+    off_t   	    my_off;
     ngx_msec_t   	my_msec;
-    time_t   	my_sec;
+    time_t   	    my_sec;
     ngx_bufs_t   	my_bufs;
     ngx_uint_t   	my_enum_seq;
-    ngx_uint_t	my_bitmask;
+    ngx_uint_t	    my_bitmask;
     ngx_uint_t   	my_access;
-    ngx_path_t*	my_path;
+    ngx_path_t*	    my_path;
 
     ngx_str_t		my_config_str;
     ngx_int_t		my_config_num;
@@ -195,17 +195,17 @@ static ngx_command_t  ngx_http_mytest_commands[] =
 
 static ngx_http_module_t  ngx_http_mytest_module_ctx =
 {
-    NULL,                              /* preconfiguration */
-    ngx_http_mytest_post_conf,      /* postconfiguration */
+    NULL,                               /* preconfiguration */
+    ngx_http_mytest_post_conf,          /* postconfiguration */
 
-    NULL,                              /* create main configuration */
-    NULL,                              /* init main configuration */
+    NULL,                               /* create main configuration */
+    NULL,                               /* init main configuration */
 
-    NULL,                              /* create server configuration */
-    NULL,                              /* merge server configuration */
+    NULL,                               /* create server configuration */
+    NULL,                               /* merge server configuration */
 
-    ngx_http_mytest_create_loc_conf, /* create location configuration */
-    ngx_http_mytest_merge_loc_conf   /* merge location configuration */
+    ngx_http_mytest_create_loc_conf,    /* create location configuration */
+    ngx_http_mytest_merge_loc_conf      /* merge location configuration */
 };
 
 ngx_module_t  ngx_http_mytest_module =
@@ -240,34 +240,34 @@ ngx_http_mytest_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
 
 static char* ngx_conf_set_myconfig(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
-    //×¢Òâ£¬²ÎÊıconf¾ÍÊÇhttp¿ò¼Ü´«¸øÎÒÃÇµÄ£¬ÔÚngx_http_mytest_create_loc_conf
-    //»Øµ÷·½·¨ÖĞ·ÖÅäµÄ½á¹¹Ìångx_http_mytest_conf_t
+    //×¢ï¿½â£¬ï¿½ï¿½ï¿½ï¿½confï¿½ï¿½ï¿½ï¿½httpï¿½ï¿½Ü´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÇµÄ£ï¿½ï¿½ï¿½ngx_http_mytest_create_loc_conf
+    //ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ·ï¿½ï¿½ï¿½Ä½á¹¹ï¿½ï¿½ngx_http_mytest_conf_t
     ngx_http_mytest_conf_t  *mycf = conf;
 
-    // cf->argsÊÇ1¸öngx_array_t¶ÓÁĞ£¬ËüµÄ³ÉÔ±¶¼ÊÇngx_str_t½á¹¹¡£
-    //ÎÒÃÇÓÃvalueÖ¸Ïòngx_array_tµÄeltsÄÚÈİ£¬ÆäÖĞvalue[1]¾ÍÊÇµÚ1
-    //¸ö²ÎÊı£¬Í¬Àívalue[2]ÊÇµÚ2¸ö²ÎÊı
+    // cf->argsï¿½ï¿½1ï¿½ï¿½ngx_array_tï¿½ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½ï¿½Ä³ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ngx_str_tï¿½á¹¹ï¿½ï¿½
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½valueÖ¸ï¿½ï¿½ngx_array_tï¿½ï¿½eltsï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½ï¿½ï¿½value[1]ï¿½ï¿½ï¿½Çµï¿½1
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½value[2]ï¿½Çµï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     ngx_str_t* value = cf->args->elts;
 
-    //ngx_array_tµÄnelts±íÊ¾²ÎÊıµÄ¸öÊı
+    //ngx_array_tï¿½ï¿½neltsï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½
     if (cf->args->nelts > 1)
     {
-        //Ö±½Ó¸³Öµ¼´¿É£¬ ngx_str_t½á¹¹Ö»ÊÇÖ¸ÕëµÄ´«µİ
+        //Ö±ï¿½Ó¸ï¿½Öµï¿½ï¿½ï¿½É£ï¿½ ngx_str_tï¿½á¹¹Ö»ï¿½ï¿½Ö¸ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
         mycf->my_config_str = value[1];
     }
     if (cf->args->nelts > 2)
     {
-        //½«×Ö·û´®ĞÎÊ½µÄµÚ2¸ö²ÎÊı×ªÎªÕûĞÍ
+        //ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½Äµï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªÎªï¿½ï¿½ï¿½ï¿½
         mycf->my_config_num = ngx_atoi(value[2].data, value[2].len);
-        //Èç¹û×Ö·û´®×ª»¯ÕûĞÍÊ§°Ü£¬½«±¨"invalid number"´íÎó£¬
-    //nginxÆô¶¯Ê§°Ü
+        //ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½"invalid number"ï¿½ï¿½ï¿½ï¿½
+    //nginxï¿½ï¿½Ê§ï¿½ï¿½
         if (mycf->my_config_num == NGX_ERROR)
         {
             return "invalid number";
         }
     }
 
-    //·µ»Ø³É¹¦
+    //ï¿½ï¿½ï¿½Ø³É¹ï¿½
     return NGX_CONF_OK;
 }
 
@@ -299,7 +299,7 @@ static void* ngx_http_mytest_create_loc_conf(ngx_conf_t *cf)
 extern ngx_module_t  ngx_http_module;
 extern ngx_module_t  ngx_http_core_module;
 
-//½öÓÃÓÚ±éÀúlocationÄÚµÄtest_str×Ö¶Î
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½locationï¿½Úµï¿½test_strï¿½Ö¶ï¿½
 void traversal(ngx_conf_t *cf, ngx_http_location_tree_node_t* node)
 {
     if (node != NULL)
@@ -330,7 +330,7 @@ void traversal(ngx_conf_t *cf, ngx_http_location_tree_node_t* node)
     }
 }
 
-//ÏÂÃæÒÔtest_strÎªÀıÔÚÆÁÄ»ÉÏÊä³ö¶ÁÈ¡µ½µÄËùÓĞ²»Í¬¿éµÄÖµ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½test_strÎªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ²ï¿½Í¬ï¿½ï¿½ï¿½Öµ
 ngx_int_t
 ngx_http_mytest_post_conf(ngx_conf_t *cf)
 {
